@@ -206,6 +206,10 @@ FetchSlide-v1:
 
 FetchPickAndPlace-v1:
   <<: *her-defaults
+  
+superFetchPickAndPlace-v1:
+  <<: *her-defaults
+ 
 
 PandaReach-v1:
   env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper

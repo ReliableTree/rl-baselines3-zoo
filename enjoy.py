@@ -8,15 +8,16 @@ import torch as th
 import yaml
 from stable_baselines3.common.utils import set_random_seed
 
-import utils.import_envs  # noqa: F401 pylint: disable=unused-import
-from utils import ALGOS, create_test_env, get_saved_hyperparams
-from utils.exp_manager import ExperimentManager
-from utils.load_from_hub import download_from_hub
-from utils.utils import StoreDict, get_model_path
+import RlBaselines3Zoo.utils.import_envs  # noqa: F401 pylint: disable=unused-import
+from RlBaselines3Zoo.utils import ALGOS, create_test_env, get_saved_hyperparams
+from RlBaselines3Zoo.utils.exp_manager import ExperimentManager
+from RlBaselines3Zoo.utils.load_from_hub import download_from_hub
+from RlBaselines3Zoo.utils.utils import StoreDict, get_model_path
 
 
-def main():  # noqa: C901
+def main(inpt_args = None):  # noqa: C901
     parser = argparse.ArgumentParser()
+    parser.add_argument("--ret_model", type=bool, default=False)
     parser.add_argument("--env", help="environment ID", type=str, default="CartPole-v1")
     parser.add_argument("-f", "--folder", help="Log folder", type=str, default="rl-trained-agents")
     parser.add_argument("--algo", help="RL Algorithm", default="ppo", type=str, required=False, choices=list(ALGOS.keys()))
@@ -61,7 +62,7 @@ def main():  # noqa: C901
     parser.add_argument(
         "--env-kwargs", type=str, nargs="+", action=StoreDict, help="Optional keyword argument to pass to the env constructor"
     )
-    args = parser.parse_args()
+    args = parser.parse_args(inpt_args.split(' '))
 
     # Going through custom gym packages to let them register in the global registory
     for env_module in args.gym_packages:
@@ -172,6 +173,8 @@ def main():  # noqa: C901
         }
 
     model = ALGOS[algo].load(model_path, env=env, custom_objects=custom_objects, device=args.device, **kwargs)
+    if args.ret_model:
+        return model
 
     obs = env.reset()
 

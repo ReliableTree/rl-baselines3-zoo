@@ -1,7 +1,10 @@
 import gym
 from gym.envs.registration import register
 
-from utils.wrappers import MaskVelocityWrapper
+from RlBaselines3Zoo.utils.wrappers import MaskVelocityWrapper
+
+from MetaWorld.searchTest.utils import SuperMyGymWrapper
+
 
 try:
     import pybullet_envs  # pytype: disable=import-error
@@ -60,3 +63,6 @@ for env_id in MaskVelocityWrapper.velocity_indices.keys():
         id=f"{name}NoVel-v{version}",
         entry_point=create_no_vel_env(env_id),
     )
+
+register(id=f'superFetchPickAndPlace-v1', entry_point=SuperMyGymWrapper("FetchPickAndPlace-v1").make_wrapper)
+#register(id=f'test-v1', entry_point=lol.create_test_env("FetchPickAndPlace-v1"))
